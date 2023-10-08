@@ -4,6 +4,7 @@
 ## Helm Chart Ignore
 **/**/Chart.lock
 **/**/charts/*.tgz
+!charts/*
 
 # Ignore output file
 output/**/*
