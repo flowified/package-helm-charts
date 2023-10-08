@@ -1,0 +1,24 @@
+apiVersion: v1
+entries:
+  argocd-apps:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-10-08T21:05:03.749189244+07:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.13.x
+    description: This is a Helm chart for create Argocd Applications.
+    digest: 990218208eac97ad3337d4d4af728b04b6de9894e68cb18b9ca8c0506ce58643
+    maintainers:
+    - email: arif17ginanjar@gmail.com
+      name: Arif Ginanjar
+      url: https://linkedin.com/in/gihif
+    name: argocd-apps
+    type: application
+    urls:
+    - argocd-apps-0.0.1.tgz
+    version: 0.0.1
+generated: "2023-10-08T21:05:03.746770113+07:00"

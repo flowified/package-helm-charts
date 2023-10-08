@@ -1,0 +1,11 @@
+# Global
+.DS_Store
+
+## Helm Chart Ignore
+**/**/Chart.lock
+**/**/charts/*.tgz
+
+# Ignore output file
+output/**/*
+output/**/*
+!output/.gitkeep

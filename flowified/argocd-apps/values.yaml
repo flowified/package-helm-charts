@@ -1,0 +1,154 @@
+# Default values for argocd-apps.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Globally shared configuration
+global:
+  # -- Common labels for the all resources
+  additionalLabels: {}
+    # organization_name: "gihif"
+    # organization_id: "gihif"
+    # environment: "local"
+    # quest_code: "hawkeye"
+    # owner: "devops"
+
+# This default configuration can be overridden in application list
+applicationDefaultConfig:
+  syncPolicy:
+    automatedPrune: true
+    automatedSelfHeal: true
+  sourceRepoURL: "https://github.com/flowified/gitops-kubernetes-argocd.git"
+  applicationType: "cluster-addons"
+  sharedNamespace:
+    create: false
+    name: ""
+    addLabels:
+      created-by: "argocd"
+    addAnnotations: {}
+
+# List of Argo Application
+applicationList: []
+
+  # Non Helm's Argo Application
+  # - name: metrics-server
+  #   namespace:
+  #     create: false
+  #     method: argocd # create method 'argocd' or 'helm'
+  #     name: kube-system
+  #     addLabels: {}
+  #     addAnnotations: {}
+  #   cluster:
+  #     name: in-cluster
+  #     url: ""
+  #   labels:
+  #     organization_name: medrest
+  #     owner: devops
+  #     environment: production
+  #     quest_code: foundation
+  #   annotations: {}
+  #   syncPolicy: {}
+  #   helm:
+  #     enabled: false
+
+  # Helm without NS's Argo Application
+  # - name: csi-secrets-store
+  #   namespace:
+  #     create: false
+  #     method: argocd # create method 'argocd' or 'helm'
+  #     name: kube-system
+  #     addLabels: {}
+  #     addAnnotations: {}
+  #   cluster:
+  #     name: in-cluster
+  #     url: ""
+  #   labels:
+  #     organization_name: medrest
+  #     owner: devops
+  #     environment: production
+  #     quest_code: foundation
+  #   annotations: {}
+  #   syncPolicy: {}
+  #   helm:
+  #     enabled: true
+  #     valueFiles:
+  #       - values/global.yaml
+
+  # Helm with NS's Argo Application
+  # - name: vault
+  #   namespace:
+  #     create: true
+  #     method: argocd # create method 'argocd' or 'helm'
+  #     name: vault
+  #     addLabels: {}
+  #     addAnnotations: {}
+  #   cluster:
+  #     name: in-cluster
+  #     url: ""
+  #   labels:
+  #     organization_name: medrest
+  #     owner: devops
+  #     environment: production
+  #     quest_code: foundation
+  #   annotations: {}
+  #   syncPolicy: {}
+  #   helm:
+  #     enabled: true
+  #     valueFiles:
+  #       - values/global.yaml
+
+  # Helm with custom NS's Argo Application
+  # - name: istio-ingress
+  #   namespace:
+  #     create: true
+  #     method: helm # create method 'argocd' or 'helm'
+  #     name: istio-ingress
+  #     addLabels:
+  #       istio-injection: enabled
+  #     addAnnotations: {}
+  #   cluster:
+  #     name: in-cluster
+  #     url: ""
+  #   labels:
+  #     organization_name: medrest
+  #     owner: devops
+  #     environment: production
+  #     quest_code: foundation
+  #   annotations: {}
+  #   syncPolicy: {}
+  #   helm:
+  #     enabled: true
+  #     valueFiles:
+  #       - values/global.yaml
+
+  # Helm with Annotation's Argo Application
+  # - name: ichiraku
+  #   namespace:
+  #     create: true
+  #     method: helm # create method 'argocd' or 'helm'
+  #     name: ichiraku-medrest-staging
+  #     addLabels:
+  #       istio-injection: enabled
+  #     addAnnotations: {}
+  #   cluster:
+  #     name: in-cluster
+  #     url: ""
+  #   labels:
+  #     organization_name: medrest
+  #     owner: medrest
+  #     environment: staging
+  #     quest_code: medrest
+  #   annotations:
+  #     # ArgoCD Image Updater Annotation
+  #     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-repository-admin
+  #     argocd-image-updater.argoproj.io/update-strategy: latest
+  #     argocd-image-updater.argoproj.io/pull-secret: pullsecret:argocd/gitlab-container-registry-user
+  #     argocd-image-updater.argoproj.io/image-list: api=registry.gitlab.com/medrest/medrest/ichiraku/api
+  #     ## ArgoCD Image Updater Annotation specific api service
+  #     argocd-image-updater.argoproj.io/api.helm.image-name: api.image.name
+  #     argocd-image-updater.argoproj.io/api.helm.image-tag: api.image.tag
+  #   syncPolicy: {}
+  #   helm:
+  #     enabled: true
+  #     valueFiles:
+  #       - values/global.yaml
+

@@ -1,0 +1,62 @@
+{{- $dot := . -}}
+{{- range $applicationIndex, $application := .Values.applicationList }}
+{{- $organization_name := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.organization_name "context" $)) $application.labels.organization_name }}
+{{- $organization_id := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.organization_id "context" $)) $application.labels.organization_id }}
+{{- $environment := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.environment "context" $)) $application.labels.environment }}
+{{- $quest_code := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.quest_code "context" $)) $application.labels.quest_code }}
+{{- $owner := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.owner "context" $)) $application.labels.owner }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  {{- if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
+  name: {{ $application.name }}
+  {{- else }}
+  name: {{ printf "%s-%s-%s-%s" $environment $organization_id $quest_code $application.name }}
+  {{- end }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: {{ $application.name }}
+    app.kubernetes.io/instance: {{ $application.name }}
+    organization_name: {{ $organization_name }}
+    organization_id: {{ $organization_id }}
+    environment: {{ $environment }}
+    quest_code: {{ $quest_code }}
+    owner: {{ $owner }}
+    created-by: argocd
+  {{- if $application.annotations }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" $application.annotations "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  destination:
+    namespace: {{ $application.namespace.name }}
+    name: {{ $application.cluster.name }}
+  project: {{ $quest_code }}
+  syncPolicy:
+    automated:
+      prune: {{ default $.Values.applicationDefaultConfig.syncPolicy.automatedPrune $application.syncPolicy.automatedPrune }}
+      selfHeal: {{ default $.Values.applicationDefaultConfig.syncPolicy.automatedSelfHeal $application.syncPolicy.automatedSelfHeal }}
+    {{- if and $application.namespace.create (eq $application.namespace.method "argocd") }}
+    syncOptions:
+      - CreateNamespace=true
+    {{- else }}
+    syncOptions:
+      - CreateNamespace=false
+    {{- end }}
+  source:
+    {{- if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
+    path: cluster-addons/{{ $environment }}/{{ $application.name }}
+    {{- else }}
+    path: services/{{ $environment }}/{{ $organization_id }}-{{ $quest_code }}/{{ $application.name }}
+    {{- end }}
+    repoURL: {{ $.Values.applicationDefaultConfig.sourceRepoURL }}
+    targetRevision: main
+    {{- if $application.helm.enabled }}
+    helm:
+      releaseName: {{ $application.name }}
+      {{- if $application.helm.valueFiles }}
+      valueFiles: {{- include "common.tplvalues.render" (dict "value" $application.helm.valueFiles "context" $) | nindent 8 }}
+      {{- end }}
+    {{- end }}
+{{- end -}}
