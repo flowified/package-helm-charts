@@ -2,8 +2,28 @@ apiVersion: v1
 entries:
   argocd-apps:
   - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2023-10-13T21:42:38.995138147+07:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.13.x
+    description: This is a Helm chart for create Argocd Applications.
+    digest: 277ced54d13ce4d8e7c62b417f3587737ce459f3de8d1bf75e57e5fce40991c7
+    maintainers:
+    - email: arif17ginanjar@gmail.com
+      name: Arif Ginanjar
+      url: https://linkedin.com/in/gihif
+    name: argocd-apps
+    type: application
+    urls:
+    - https://flowified.github.io/package-helm-charts/charts/argocd-apps-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
     appVersion: 0.0.1
-    created: "2023-10-08T21:36:19.289169478+07:00"
+    created: "2023-10-13T21:42:38.99327999+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -21,4 +41,4 @@ entries:
     urls:
     - https://flowified.github.io/package-helm-charts/charts/argocd-apps-0.0.1.tgz
     version: 0.0.1
-generated: "2023-10-08T21:36:19.286839836+07:00"
+generated: "2023-10-13T21:42:38.990612762+07:00"

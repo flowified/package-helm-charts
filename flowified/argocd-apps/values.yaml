@@ -25,6 +25,7 @@ applicationDefaultConfig:
     addLabels:
       created-by: "argocd"
     addAnnotations: {}
+  vaultPluginEnabled: true
 
 # List of Argo Application
 applicationList: []

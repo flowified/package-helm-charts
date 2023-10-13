@@ -50,6 +50,10 @@ spec:
     {{- else }}
     path: services/{{ $environment }}/{{ $organization_id }}-{{ $quest_code }}/{{ $application.name }}
     {{- end }}
+    {{- if $.Values.applicationDefaultConfig.vaultPluginEnabled }}
+    plugin:
+      name: argocd-vault-plugin # Don't include this if installing via sidecar
+    {{- end }}
     repoURL: {{ $.Values.applicationDefaultConfig.sourceRepoURL }}
     targetRevision: main
     {{- if $application.helm.enabled }}
