@@ -23,11 +23,23 @@ spec:
 {{- $dot := . -}}
 {{- range $applicationIndex, $application := .Values.applicationList }}
 {{- if and $application.namespace.create (eq $application.namespace.method "helm") }}
+{{- $organization_id := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.organization_id "context" $)) $application.labels.organization_id }}
+{{- $environment := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.environment "context" $)) $application.labels.environment }}
+{{- $quest_code := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.quest_code "context" $)) $application.labels.quest_code }}
+
+{{- $namespace := "" }}
+{{- if $application.namespace.name }}
+{{- $namespace := $application.namespace.name }}
+{{- else if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
+{{- $namespace := $application.name }}
+{{- else }}
+{{- $namespace := printf "%s-%s-%s" $organization_id $quest_code $environment }}
+{{- end }}
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ $application.namespace.name }}
+  name: {{ $namespace }}
   labels:
     kubernetes.io/metadata.name: {{ $application.name }}
     app: {{ $application.name }}
