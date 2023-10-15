@@ -48,6 +48,7 @@ applicationList: []
   #     quest_code: foundation
   #   annotations: {}
   #   syncPolicy: {}
+  #   vaultPluginEnabled: true
   #   helm:
   #     enabled: false
 
@@ -69,6 +70,7 @@ applicationList: []
   #     quest_code: foundation
   #   annotations: {}
   #   syncPolicy: {}
+  #   vaultPluginEnabled: true
   #   helm:
   #     enabled: true
   #     valueFiles:
@@ -92,6 +94,7 @@ applicationList: []
   #     quest_code: foundation
   #   annotations: {}
   #   syncPolicy: {}
+  #   vaultPluginEnabled: true
   #   helm:
   #     enabled: true
   #     valueFiles:
@@ -116,6 +119,7 @@ applicationList: []
   #     quest_code: foundation
   #   annotations: {}
   #   syncPolicy: {}
+  #   vaultPluginEnabled: true
   #   helm:
   #     enabled: true
   #     valueFiles:
@@ -148,6 +152,7 @@ applicationList: []
   #     argocd-image-updater.argoproj.io/api.helm.image-name: api.image.name
   #     argocd-image-updater.argoproj.io/api.helm.image-tag: api.image.tag
   #   syncPolicy: {}
+  #   vaultPluginEnabled: true
   #   helm:
   #     enabled: true
   #     valueFiles:

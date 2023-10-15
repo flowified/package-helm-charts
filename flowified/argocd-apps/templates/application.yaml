@@ -5,6 +5,15 @@
 {{- $environment := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.environment "context" $)) $application.labels.environment }}
 {{- $quest_code := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.quest_code "context" $)) $application.labels.quest_code }}
 {{- $owner := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.owner "context" $)) $application.labels.owner }}
+
+{{- $namespace := "" }}
+{{- if or $.Values.applicationDefaultConfig.sharedNamespace.name $application.namespace.name }}
+{{- $namespace := default (include "common.tplvalues.render" (dict "value" $.Values.applicationDefaultConfig.sharedNamespace.name "context" $)) $application.namespace.name }}
+{{- else if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
+{{- $namespace := $application.name }}
+{{- else }}
+{{- $namespace := printf "%s-%s-%s" $organization_id $quest_code $environment }}
+{{- end }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -12,7 +21,7 @@ metadata:
   {{- if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
   name: {{ $application.name }}
   {{- else }}
-  name: {{ printf "%s-%s-%s-%s" $environment $organization_id $quest_code $application.name }}
+  name: {{ printf "%s-%s-%s-%s" $organization_id $quest_code $environment $application.name }}
   {{- end }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -30,9 +39,9 @@ metadata:
   {{- end }}
 spec:
   destination:
-    namespace: {{ $application.namespace.name }}
+    namespace: {{ $namespace }}
     name: {{ $application.cluster.name }}
-  project: {{ $quest_code }}
+  project: {{ printf "%s-%s" $organization_id $quest_code }}
   syncPolicy:
     automated:
       prune: {{ default $.Values.applicationDefaultConfig.syncPolicy.automatedPrune $application.syncPolicy.automatedPrune }}
@@ -46,17 +55,27 @@ spec:
     {{- end }}
   source:
     {{- if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
-    path: cluster-addons/{{ $environment }}/{{ $application.name }}
+    path: {{ printf "%s/%s/%s" $.Values.applicationDefaultConfig.applicationType $environment $application.name }}
     {{- else }}
-    path: services/{{ $environment }}/{{ $organization_id }}-{{ $quest_code }}/{{ $application.name }}
-    {{- end }}
-    {{- if $.Values.applicationDefaultConfig.vaultPluginEnabled }}
-    plugin:
-      name: argocd-vault-plugin # Don't include this if installing via sidecar
+    path: services/{{ $organization_id }}-{{ $quest_code }}/{{ $environment }}/{{ $application.name }}
     {{- end }}
     repoURL: {{ $.Values.applicationDefaultConfig.sourceRepoURL }}
     targetRevision: main
-    {{- if $application.helm.enabled }}
+    {{- if and (not $application.helm.enabled) (or $.Values.applicationDefaultConfig.vaultPluginEnabled $application.vaultPluginEnabled) }}
+    plugin:
+      name: argocd-vault-plugin
+    {{- end }}
+    {{- if and $application.helm.enabled (or $.Values.applicationDefaultConfig.vaultPluginEnabled $application.vaultPluginEnabled) }}
+    plugin:
+      name: argocd-vault-plugin-helm
+      env:
+        - name: RELEASE_NAME
+          value: {{ $application.name }}
+        {{- with .Values.helm.valueFiles }}
+        - name: HELM_ARGS
+          value: --values {{- join " --values " . }}
+        {{- end }}
+    {{- else }}
     helm:
       releaseName: {{ $application.name }}
       {{- if $application.helm.valueFiles }}
