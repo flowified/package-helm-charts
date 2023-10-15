@@ -71,7 +71,7 @@ spec:
       env:
         - name: RELEASE_NAME
           value: {{ $application.name }}
-        {{- with .Values.helm.valueFiles }}
+        {{- with $application.helm.valueFiles }}
         - name: HELM_ARGS
           value: --values {{- join " --values " . }}
         {{- end }}
