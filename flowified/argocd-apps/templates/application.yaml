@@ -6,19 +6,18 @@
 {{- $quest_code := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.quest_code "context" $)) $application.labels.quest_code }}
 {{- $owner := default (include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels.owner "context" $)) $application.labels.owner }}
 
-{{- $namespace := "" }}
-{{- if or $.Values.applicationDefaultConfig.sharedNamespace.name $application.namespace.name }}
-{{- $namespace := default (include "common.tplvalues.render" (dict "value" $.Values.applicationDefaultConfig.sharedNamespace.name "context" $)) $application.namespace.name }}
-{{- else if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
-{{- $namespace := $application.name }}
+{{- $vaultPluginEnabled := "" }}
+{{- if (hasKey $application "vaultPluginEnabled") }}
+{{- $vaultPluginEnabled = $application.vaultPluginEnabled }}
 {{- else }}
-{{- $namespace := printf "%s-%s-%s" $organization_id $quest_code $environment }}
+{{- $vaultPluginEnabled = $.Values.applicationDefaultConfig.vaultPluginEnabled }}
 {{- end }}
+
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  {{- if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
+  {{- if eq $quest_code $.Values.applicationDefaultConfig.initialApplicationGroup }}
   name: {{ $application.name }}
   {{- else }}
   name: {{ printf "%s-%s-%s-%s" $organization_id $quest_code $environment $application.name }}
@@ -39,9 +38,19 @@ metadata:
   {{- end }}
 spec:
   destination:
-    namespace: {{ $namespace }}
+    {{- if or $.Values.applicationDefaultConfig.sharedNamespace.name $application.namespace.name }}
+    namespace: {{ default (include "common.tplvalues.render" (dict "value" $.Values.applicationDefaultConfig.sharedNamespace.name "context" $)) $application.namespace.name }}
+    {{- else if eq $quest_code $.Values.applicationDefaultConfig.initialApplicationGroup }}
+    namespace: {{ $application.name }}
+    {{- else }}
+    namespace: {{ printf "%s-%s-%s" $organization_id $quest_code $environment }}
+    {{- end }}
     name: {{ $application.cluster.name }}
+  {{- if eq $quest_code $.Values.applicationDefaultConfig.initialApplicationGroup }}
+  project: {{ $.Values.applicationDefaultConfig.initialApplicationGroup }}
+  {{- else }}
   project: {{ printf "%s-%s" $organization_id $quest_code }}
+  {{- end }}
   syncPolicy:
     automated:
       prune: {{ default $.Values.applicationDefaultConfig.syncPolicy.automatedPrune $application.syncPolicy.automatedPrune }}
@@ -54,27 +63,28 @@ spec:
       - CreateNamespace=false
     {{- end }}
   source:
-    {{- if eq $quest_code $.Values.applicationDefaultConfig.applicationType }}
-    path: {{ printf "%s/%s/%s" $.Values.applicationDefaultConfig.applicationType $environment $application.name }}
+    {{- if eq $quest_code $.Values.applicationDefaultConfig.initialApplicationGroup }}
+    path: {{ printf "%s/%s/%s" $.Values.applicationDefaultConfig.initialApplicationGroup $environment $application.name }}
     {{- else }}
     path: services/{{ $organization_id }}-{{ $quest_code }}/{{ $environment }}/{{ $application.name }}
     {{- end }}
     repoURL: {{ $.Values.applicationDefaultConfig.sourceRepoURL }}
     targetRevision: main
-    {{- if and (not $application.helm.enabled) (or $.Values.applicationDefaultConfig.vaultPluginEnabled $application.vaultPluginEnabled) }}
+    {{- if and (not $application.helm.enabled) $vaultPluginEnabled }}
     plugin:
       name: argocd-vault-plugin
     {{- end }}
-    {{- if and $application.helm.enabled (or $.Values.applicationDefaultConfig.vaultPluginEnabled $application.vaultPluginEnabled) }}
+    {{- if and $application.helm.enabled $vaultPluginEnabled }}
     plugin:
       name: argocd-vault-plugin-helm
       env:
         - name: RELEASE_NAME
           value: {{ $application.name }}
-        {{- with $application.helm.valueFiles }}
         - name: HELM_ARGS
-          value: --values {{- join " --values " . }}
-        {{- end }}
+          value: |-
+          {{- range $application.helm.valueFiles }}
+            --values {{ . }}
+          {{- end }} 
     {{- else }}
     helm:
       releaseName: {{ $application.name }}
