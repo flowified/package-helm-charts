@@ -18,7 +18,7 @@ applicationDefaultConfig:
     automatedPrune: true
     automatedSelfHeal: true
   sourceRepoURL: "https://github.com/flowified/gitops-kubernetes-argocd.git"
-  applicationType: "cluster-addons"
+  initialApplicationGroup: "cluster-addons"
   sharedNamespace:
     create: false
     name: ""
