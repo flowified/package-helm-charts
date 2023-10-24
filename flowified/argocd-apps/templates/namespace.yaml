@@ -42,7 +42,7 @@ metadata:
   {{- else if eq $quest_code $.Values.applicationDefaultConfig.initialApplicationGroup }}
   name: {{ $application.name }}
   {{- else }}
-  name: {{ printf "%s-%s-%s-%s" $organization_id $quest_code $environment $application.name }}
+  name: {{ printf "%s-%s-%s-%s" $organization_id $quest_code $application.name $environment }}
   {{- end }}
   labels:
     kubernetes.io/metadata.name: {{ $application.name }}

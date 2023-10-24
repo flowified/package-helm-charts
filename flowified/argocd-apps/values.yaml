@@ -6,10 +6,11 @@
 global:
   # -- Common labels for the all resources
   additionalLabels: {}
-    # organization_name: "gihif"
-    # organization_id: "gihif"
-    # environment: "local"
-    # quest_code: "hawkeye"
+    # flwd_env: "prd"
+    # organization_name: "flowified"
+    # organization_id: "flowified"
+    # environment: "production"
+    # quest_code: "cluster-addons"
     # owner: "devops"
 
 # This default configuration can be overridden in application list
