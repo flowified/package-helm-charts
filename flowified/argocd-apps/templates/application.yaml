@@ -107,7 +107,7 @@ spec:
           {{- range $application.helm.valueFiles }}
             --values {{ . }}
           {{- end }} 
-    {{- else }}
+    {{- else if and $application.helm.enabled (not $vaultPluginEnabled) }}
     helm:
       releaseName: {{ $application.name }}
       {{- if $application.helm.valueFiles }}
