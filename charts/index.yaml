@@ -2,8 +2,28 @@ apiVersion: v1
 entries:
   argocd-apps:
   - apiVersion: v2
+    appVersion: 0.1.6
+    created: "2023-11-11T19:22:37.436977684+07:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 2.13.x
+    description: This is a Helm chart for create Argocd Applications.
+    digest: 55b4e5e8ace3a09e5e45432504b2701c8bbed92dded5b71d3420cc6077cb786a
+    maintainers:
+    - email: arif17ginanjar@gmail.com
+      name: Arif Ginanjar
+      url: https://linkedin.com/in/gihif
+    name: argocd-apps
+    type: application
+    urls:
+    - https://flowified.github.io/package-helm-charts/charts/argocd-apps-0.1.6.tgz
+    version: 0.1.6
+  - apiVersion: v2
     appVersion: 0.1.5
-    created: "2023-11-08T14:03:03.663421761+07:00"
+    created: "2023-11-11T19:22:37.435147946+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -23,7 +43,7 @@ entries:
     version: 0.1.5
   - apiVersion: v2
     appVersion: 0.1.4
-    created: "2023-11-08T14:03:03.661372726+07:00"
+    created: "2023-11-11T19:22:37.433089802+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -43,7 +63,7 @@ entries:
     version: 0.1.4
   - apiVersion: v2
     appVersion: 0.1.3
-    created: "2023-11-08T14:03:03.654692591+07:00"
+    created: "2023-11-11T19:22:37.430737666+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -63,7 +83,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 0.1.2
-    created: "2023-11-08T14:03:03.652462447+07:00"
+    created: "2023-11-11T19:22:37.428012802+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -83,7 +103,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 0.1.1
-    created: "2023-11-08T14:03:03.650193763+07:00"
+    created: "2023-11-11T19:22:37.425208993+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -103,7 +123,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2023-11-08T14:03:03.647970412+07:00"
+    created: "2023-11-11T19:22:37.423216454+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -123,7 +143,7 @@ entries:
     version: 0.1.0
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2023-11-08T14:03:03.645688261+07:00"
+    created: "2023-11-11T19:22:37.4210877+07:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -147,7 +167,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 2.13.3
-    created: "2023-11-08T14:03:03.665267445+07:00"
+    created: "2023-11-11T19:22:37.438736724+07:00"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
     digest: 08a46a850789938ede61d6a53552f48cb8ba74c4e17dcf30c9c50e5783ca6a13
@@ -169,4 +189,4 @@ entries:
     urls:
     - https://flowified.github.io/package-helm-charts/charts/common-2.13.3.tgz
     version: 2.13.3
-generated: "2023-11-08T14:03:03.641793369+07:00"
+generated: "2023-11-11T19:22:37.415814397+07:00"

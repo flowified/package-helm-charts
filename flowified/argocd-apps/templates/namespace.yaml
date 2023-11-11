@@ -8,18 +8,21 @@ kind: Namespace
 metadata:
   {{- if .Values.applicationDefaultConfig.sharedNamespace.name }}
   name: {{ .Values.applicationDefaultConfig.sharedNamespace.name }}
-  {{- else }}
-  name: {{ printf "%s-%s-%s" $organization_id $quest_code $environment }}
-  {{- end }}
   labels:
     kubernetes.io/metadata.name: {{ .Values.applicationDefaultConfig.sharedNamespace.name }}
     app: {{ .Values.applicationDefaultConfig.sharedNamespace.name }}
-    {{- if .Values.applicationDefaultConfig.sharedNamespace.addLabels }}
-      {{- include "common.tplvalues.render" (dict "value" .Values.applicationDefaultConfig.sharedNamespace.addLabels "context" $) | nindent 4 }}
-    {{- end }}
-    {{- if $.Values.global.additionalLabels  }}
-      {{- include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels "context" $) | nindent 4 }}
-    {{- end }}
+  {{- else }}
+  name: {{ printf "%s-%s-%s" $organization_id $quest_code $environment }}
+  labels:
+    kubernetes.io/metadata.name: {{ printf "%s-%s-%s" $organization_id $quest_code $environment }}
+    app: {{ printf "%s-%s-%s" $organization_id $quest_code $environment }}
+  {{- end }}
+  {{- if .Values.applicationDefaultConfig.sharedNamespace.addLabels }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.applicationDefaultConfig.sharedNamespace.addLabels "context" $) | nindent 4 }}
+  {{- end }}
+  {{- if $.Values.global.additionalLabels  }}
+    {{- include "common.tplvalues.render" (dict "value" $.Values.global.additionalLabels "context" $) | nindent 4 }}
+  {{- end }}
   {{- if .Values.applicationDefaultConfig.sharedNamespace.addAnnotations }}
   annotations: {{- include "common.tplvalues.render" (dict "value" .Values.applicationDefaultConfig.sharedNamespace.addAnnotations "context" $) | nindent 4 }}
   {{- end }}
